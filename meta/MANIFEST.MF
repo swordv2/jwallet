@@ -1,0 +1,5 @@
+Main-Class: net.yufeng.jwallet.JWallet
+Class-Path: . jwallet.jar 
+ lib/bitcoinj-0.3.jar 
+ lib/slf4j-api-1.6.1.jar 
+ lib/slf4j-simple-1.6.1.jar

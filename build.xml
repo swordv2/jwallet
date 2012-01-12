@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<project name="jwallet" default="jar" basedir=".">
+
+	<property file="build.properties"/>
+
+	<property name="lib.home" value="${basedir}/lib" />
+	<property name="app.version" value="" />
+	<property name="build.home" value="${basedir}/build" />
+	<property name="build.src" value="${build.home}/src" />
+	<property name="build.bin" value="${build.home}/bin" />
+	<property name="dist.home" value="${basedir}" />
+	<property name="src.home" value="${basedir}/src" />
+	<property name="meta.home" value="${basedir}/meta" />
+	<property name="script.home" value="${basedir}/scripts" />
+
+	<property name="debug" value="on" />
+	<property name="optimize" value="off" />
+	<property name="deprecation" value="off" />
+	<property name="nowarn" value="on"/>
+
+	<property name="vm" value="1.5"/>
+
+	<path id="class.path">
+		<fileset dir="${lib.home}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.src}" />
+		<mkdir dir="${build.bin}" />
+		<mkdir dir="${dist.home}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<copy todir="${build.src}">
+			<fileset dir="${src.home}">
+				<exclude name="**/*Test.java"/>
+			</fileset>
+		</copy>
+		<javac srcdir="${build.src}" destdir="${build.bin}" nowarn="${nowarn}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" source="${vm}" target="${vm}">
+			<classpath>
+				<fileset dir="${lib.home}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${dist.home}/${ant.project.name}.jar" manifest="${meta.home}/MANIFEST.MF">
+			<fileset dir="${build.bin}">
+				<include name="**/*.class"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="release" depends="jar">
+		<zip destfile="${basedir}/${ant.project.name}.zip">
+			<zipfileset dir="${lib.home}" includes="*" prefix="libs" />
+			<zipfileset dir="${basedir}" includes="${ant.project.name}.jar" />
+			<zipfileset dir="${basedir}" includes="README" />
+			<zipfileset dir="${src.home}" includes="**/*.java" excludes="**/*Test.java" prefix="src" />
+		</zip>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.home}" />
+	</target>
+</project>
